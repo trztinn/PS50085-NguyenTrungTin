@@ -1,2 +1,16 @@
+# C Executables
 *.exe
+*.o
+*.obj
+
+# Java Bytecode
+*.class
+
+# Images & System Junk
 *.jpg
+*.png
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/

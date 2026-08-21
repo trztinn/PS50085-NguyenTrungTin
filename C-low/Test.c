@@ -1,53 +1,30 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <windows.h>
 
-void thapPhanSangThapLucPhan() {
-    int n;
-    char hex[50];
-    int count = 0;
+int main() {
+    int n, a[100];
 
-    printf("Nhap n: ");
+    printf("Nhap so luong phan tu: ");
     scanf("%d", &n);
 
-    // Trường hợp đặc biệt n = 0
-    if (n == 0) {
-        printf("Thap luc phan (Hex): 0\n");
-        return;
+    // a. Nhap day so nguyen
+    for (int i = 0; i < n; i++) {
+        printf("Nhap phan tu a[%d]: ", i);
+        scanf("%d", &a[i]);
     }
 
-    int N = n;
-
-    while (N > 0) {
-        int du = N % 16; // 1. Chia lấy dư cho 16
-
-        // 2. Chuyển số dư thành ký tự tương ứng
-        if (du < 10) {
-            hex[count] = du + '0';         // Dư 0..9 -> '0'..'9'
-        } else {
-            hex[count] = (du - 10) + 'A';  // Dư 10..15 -> 'A'..'F'
+    // b. Kiểm tra phan tu chan thi giam 1
+    for (int i = 0; i < n; i++) {
+        if (a[i] % 2 == 0) {
+            a[i] = a[i] - 1;
         }
-
-        count++;
-        N = N / 16; // Chia lấy nguyên cho 16
     }
 
-    // In kết quả đảo ngược
-    printf("Thap luc phan (Hex): ");
-    for (int i = count - 1; i >= 0; i--) {
-        printf("%c", hex[i]);
+    // c. Xuat day
+    printf("\nDay so sau khi xu ly: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", a[i]);
     }
-
     printf("\n");
-}
-int main(){
-    thapPhanSangThapLucPhan();
-    
+
     return 0;
 }
-
-    
-
-
