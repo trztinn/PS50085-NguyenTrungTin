@@ -15,6 +15,8 @@ public class Product {
         
         System.out.print("Nhap thue san pham (vi du: 0.1 cho 10%): ");
         this.tax = sc.nextDouble();
+
+        sc.close();
     }
 
     public double getTaxPrice() {
