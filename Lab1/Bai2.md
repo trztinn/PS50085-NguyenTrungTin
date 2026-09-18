@@ -1,0 +1,7 @@
+Số: 18
+
+MSSV: PS50085
+
+Họ tên: Nguyễn Trung Tín
+
+Link YouTube: https://youtu.be/l1vn85qkcgg
