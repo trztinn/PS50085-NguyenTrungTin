@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hình chóp S.ABCD, SA ⊥ đáy</title>
+<style>
+  :root{--bg:#fff;--fg:#1f1f1d;--muted:#6b6a64;--acc:#185FA5;--card:#f4f3ee}
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#1f1f1d;--fg:#f1efe8;--muted:#b4b2a9;--acc:#85B7EB;--card:#2c2c2a}
+  }
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font-family:system-ui,sans-serif;line-height:1.6}
+  main{max-width:520px;margin:0 auto;padding:20px 16px}
+  h1{font-size:20px;font-weight:500;margin:0 0 4px}
+  p{margin:0 0 12px;color:var(--muted)}
+  svg{width:100%;height:auto;display:block}
+  .card{background:var(--card);border-radius:12px;padding:12px 16px;margin-top:12px}
+  .row{display:flex;justify-content:space-between;gap:12px}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  .lbl{font-size:15px;font-weight:500;fill:var(--fg)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Hình chóp S.ABCD, SA ⊥ (ABCD)</h1>
+  <p>Đáy ABCD là hình vuông cạnh a. Kéo thanh trượt để đổi độ dài SA.</p>
+
+  <svg viewBox="0 0 340 380">
+    <!-- mặt đáy -->
+    <polygon points="60,330 210,330 270,285 120,285" fill="var(--acc)" fill-opacity="0.1"/>
+
+    <!-- cạnh nhìn thấy (nét liền) -->
+    <g stroke="var(--fg)" stroke-width="1.5">
+      <line id="SA" x1="60"  y1="330" x2="60" y2="180"/>
+      <line id="SB" x1="210" y1="330" x2="60" y2="180"/>
+      <line id="SC" x1="270" y1="285" x2="60" y2="180"/>
+      <line x1="60"  y1="330" x2="210" y2="330"/>
+      <line x1="210" y1="330" x2="270" y2="285"/>
+    </g>
+
+    <!-- cạnh bị khuất (nét đứt) -->
+    <g stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4">
+      <line x1="60"  y1="330" x2="120" y2="285"/>
+      <line x1="120" y1="285" x2="270" y2="285"/>
+      <line id="SD" x1="120" y1="285" x2="60" y2="180"/>
+    </g>
+
+    <!-- đường chéo AC (hình chiếu của SC lên đáy) -->
+    <line x1="60" y1="330" x2="270" y2="285"
+          stroke="var(--acc)" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+    <!-- góc vuông tại A và cung góc α -->
+    <path d="M60 318 L72 318 L72 330" fill="none" stroke="var(--acc)" stroke-width="1.5"/>
+    <path id="arc" fill="none" stroke="var(--acc)" stroke-width="1.5"/>
+    <text id="alpha" class="lbl" style="fill:var(--acc)">α</text>
+
+    <!-- tên đỉnh -->
+    <text id="tS" class="lbl" x="44" y="178" text-anchor="end">S</text>
+    <text class="lbl" x="44"  y="348" text-anchor="end">A</text>
+    <text class="lbl" x="216" y="350">B</text>
+    <text class="lbl" x="280" y="282">C</text>
+    <text class="lbl" x="126" y="304">D</text>
+  </svg>
+
+  <div class="card">
+    <label for="k">SA = <span id="kv"></span> · a</label>
+    <input id="k" type="range" min="0.5" max="2" step="0.1" value="1.4142">
+    <div class="row"><span>Góc α giữa SC và (ABCD)</span><strong id="ang"></strong></div>
+    <div class="row"><span>Khoảng cách từ A đến (SBC)</span><strong id="dist"></strong></div>
+  </div>
+</main>
+
+<script>
+  const A = [60, 330], C = [270, 285];
+  const $ = id => document.getElementById(id);
+
+  function draw() {
+    const k = parseFloat($('k').value);       // k = SA / a
+    const sy = 330 - 150 * k;                 // toạ độ y của S (a = 150 px)
+
+    ['SA', 'SB', 'SC', 'SD'].forEach(id => $(id).setAttribute('y2', sy));
+    $('tS').setAttribute('y', sy - 2);
+
+    // cung góc SCA
+    const S = [60, sy];
+    const unit = P => {
+      const dx = P[0] - C[0], dy = P[1] - C[1], n = Math.hypot(dx, dy);
+      return [dx / n, dy / n];
+    };
+    const u = unit(S), v = unit(A), r = 38;
+    const p1 = [C[0] + u[0] * r, C[1] + u[1] * r];
+    const p2 = [C[0] + v[0] * r, C[1] + v[1] * r];
+    const sweep = (u[0] * v[1] - u[1] * v[0]) > 0 ? 1 : 0;
+    $('arc').setAttribute('d',
+      `M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A${r} ${r} 0 0 ${sweep} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`);
+
+    // vị trí chữ α trên đường phân giác của góc
+    const m = [u[0] + v[0], u[1] + v[1]], mn = Math.hypot(m[0], m[1]);
+    $('alpha').setAttribute('x', (C[0] + m[0] / mn * (r + 10) - 5).toFixed(1));
+    $('alpha').setAttribute('y', (C[1] + m[1] / mn * (r + 10) + 5).toFixed(1));
+
+    // kết quả tính toán
+    const alpha = Math.atan(k / Math.SQRT2) * 180 / Math.PI;  // tan α = SA / AC
+    const d = k / Math.sqrt(k * k + 1);                       // d(A,(SBC)) / a
+    $('kv').textContent   = k.toFixed(2).replace('.', ',');
+    $('ang').textContent  = alpha.toFixed(1).replace('.', ',') + '°';
+    $('dist').textContent = d.toFixed(3).replace('.', ',') + ' · a';
+  }
+
+  $('k').addEventListener('input', draw);
+  draw();
+</script>
+</body>
+</html>
